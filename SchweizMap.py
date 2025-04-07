@@ -130,4 +130,17 @@ import webbrowser
 # Open the HTML file in the default web browser
 print(f"Opening {html_file} in web browser...")
 file_url = f"file://{os.path.abspath(html_file)}"
+
+# Open the HTML file in the default web browser
+print(f"Opening {html_file} in web browser...")
+file_url = f"file://{os.path.abspath(html_file)}"
+
+# Save the map as a PDF file
+pdf_file = "switzerland_income_map.svg"
+print(f"Saving map to {pdf_file}...")
+fig.write_image(pdf_file)
+
+# Open the HTML file in the default web browser
+print(f"Opening {html_file} in web browser...")
+file_url = f"file://{os.path.abspath(html_file)}"
 webbrowser.open_new_tab(file_url)

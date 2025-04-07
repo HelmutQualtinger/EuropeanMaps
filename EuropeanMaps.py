@@ -302,5 +302,6 @@ fig.update_layout(
 )
 file_path = os.path.abspath("european_life_expectancy.html")
 fig.write_html(file_path)
-
+image_path = os.path.abspath("european_life_expectancy.png")
+fig.write_image(image_path)
 webbrowser.open("file://" + file_path)
