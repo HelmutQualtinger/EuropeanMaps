@@ -54,6 +54,7 @@ try:
     print("Available columns:", cantons_geo.columns)
     # Add income data to the GeoDataFrame
     cantons_geo['income_per_capita'] = [mean_income[canton] for canton in cantons_geo['id']]
+    print("Available columns:", cantons_geo.columns)
     print(cantons_geo.head())
 
 except Exception as e:
@@ -131,14 +132,7 @@ import webbrowser
 print(f"Opening {html_file} in web browser...")
 file_url = f"file://{os.path.abspath(html_file)}"
 
-# Open the HTML file in the default web browser
-print(f"Opening {html_file} in web browser...")
-file_url = f"file://{os.path.abspath(html_file)}"
 
-# Save the map as a PDF file
-pdf_file = "switzerland_income_map.svg"
-print(f"Saving map to {pdf_file}...")
-fig.write_image(pdf_file)
 
 # Open the HTML file in the default web browser
 print(f"Opening {html_file} in web browser...")
