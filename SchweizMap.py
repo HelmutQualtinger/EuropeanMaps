@@ -35,6 +35,35 @@ mean_income = {
     'JU': 49100   # Jura
 }
 
+life_expectancy_ch = {
+    "ZH": 84.3,  # Zürich
+    "BE": 83.1,  # Bern
+    "LU": 84.1,  # Luzern
+    "UR": 83.8,  # Uri
+    "SZ": 84.2,  # Schwyz
+    "OW": 84.0,  # Obwalden
+    "NW": 84.1,  # Nidwalden
+    "GL": 83.5,  # Glarus
+    "ZG": 84.8,  # Zug
+    "FR": 83.8,  # Freiburg
+    "SO": 83.4,  # Solothurn
+    "BS": 82.3,  # Basel-Stadt
+    "BL": 84.0,  # Basel-Landschaft
+    "SH": 83.6,  # Schaffhausen
+    "AR": 83.7,  # Appenzell Ausserrhoden
+    "AI": 83.9,  # Appenzell Innerrhoden
+    "SG": 83.7,  # St. Gallen
+    "GR": 83.4,  # Graubünden
+    "AG": 83.8,  # Aargau
+    "TG": 83.9,  # Thurgau
+    "TI": 83.1,  # Tessin
+    "VD": 83.2,  # Waadt
+    "VS": 83.3,  # Wallis
+    "NE": 82.7,  # Neuenburg
+    "GE": 82.5,  # Genf
+    "JU": 82.9   # Jura
+}
+
 
 # --- 1. Configuration ---
 
@@ -53,7 +82,7 @@ try:
     # Optional: Print columns to see available properties like 'id', 'name'
     print("Available columns:", cantons_geo.columns)
     # Add income data to the GeoDataFrame
-    cantons_geo['income_per_capita'] = [mean_income[canton] for canton in cantons_geo['id']]
+    cantons_geo['income_per_capita'] = [life_expectancy_ch [canton] for canton in cantons_geo['id']]
     print("Available columns:", cantons_geo.columns)
     print(cantons_geo.head())
 
@@ -76,11 +105,11 @@ fig = px.choropleth_mapbox(
     color='income_per_capita',
     color_continuous_scale='rainbow_r',  # Similar to 'hot' in matplotlib
     mapbox_style="carto-positron",  # Changed from "carto-positron" to show more geographical details
-    zoom=5.5,
+    zoom=7.5,
     center={"lat": 46.8, "lon": 8.2},  # Center of Switzerland
-    opacity=0.6,  # Reduced opacity to better see geographical features underneath
-    labels={'income_per_capita': 'Per Capita Income (CHF)'},
-    # Added 'name' if available in your GeoJSON
+    opacity=0.4,  # Reduced opacity to better see geographical features underneath
+    labels={'income_per_capita': 'Lebenserwartung'},  # Label for the color legend
+    # Added 'name' if availabe in your GeoJSON
 )
 
 
