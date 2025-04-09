@@ -125,7 +125,13 @@ fig = px.choropleth_map(
     hover_name='state',                # Display state name prominently on hover
     hover_data={'wealth': ':.4f%'}, # Show unemployment formatted to 1 decimal place, add '%'
     labels={'wealth': 'wealth'}, # Label for the color legend and hover
-    title="US States median wealth (Mapbox Example)"
+    title="US States median wealth (Mapbox Example)",
+
+)
+
+fig.update_traces(
+    marker_line_width=5,  # Width of the borders between states
+    marker_line_color="lightblue",  # Color of the borders between states
 )
 fig.update_layout(
     title='Unemployment Rate by State',

@@ -106,7 +106,7 @@ df['centroid'] = df['geometry'].apply(lambda x: x.centroid)
 df['Gehalt'] = (df['Gehalt'].astype(float)/14).astype(int)
 print(df.head())
 print (df.columns)
-
+df.to_csv('wien_bezirke.csv', index=False)
 # Mapbox-Token (erforderlich für die Verwendung von choropleth_mapbox)
 # Ersetze 'YOUR_MAPBOX_TOKEN' mit deinem eigenen Token.
 # Ein Token kannst du kostenlos auf mapbox.com erstellen.
