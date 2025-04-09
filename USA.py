@@ -121,7 +121,7 @@ fig = px.choropleth_map(
     map_style="satellite-streets",     # Basemap style (this one doesn't require a token)
     zoom=3,                            # Initial map zoom level
     center={"lat": 37.0902, "lon": -95.7129}, # Initial map center (approx. center of USA)
-    opacity=0.3,                       # Opacity of the colored regions (0=transparent, 1=opaque)
+    opacity=0.5,                       # Opacity of the colored regions (0=transparent, 1=opaque)
     hover_name='state',                # Display state name prominently on hover
     hover_data={'wealth': ':.4f%'}, # Show unemployment formatted to 1 decimal place, add '%'
     labels={'wealth': 'wealth'}, # Label for the color legend and hover
