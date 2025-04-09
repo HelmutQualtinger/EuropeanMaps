@@ -99,12 +99,10 @@ data = {
 df = pd.DataFrame(data)
 
 # --- 2. GeoJSON Source ---
-# URL to a GeoJSON file containing US State boundaries.
-# Plotly can often read directly from URLs.
-geojson_url = "https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json"
-# Alternatively, if you have downloaded the file:
-# geojson_local_path = "path/to/your/us-states.geojson"
-# You would then use geojson=geojson_local_path in the function call.
+# To use a local downloaded GeoJSON file, load it as a Python dictionary.
+import json
+with open("/Users/haraldbeker/EuropeanMaps/us-states.geojson", "r") as f:
+    geojson_data = json.load(f)
 
 # --- Optional: Set Mapbox Token (needed for certain map styles like 'satellite', 'streets') ---
 # Get a free token from account.mapbox.com
@@ -113,7 +111,7 @@ geojson_url = "https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/
 # --- 3. Create the Choropleth Mapbox plot ---
 fig = px.choropleth_mapbox(
     data_frame=df,                     # Your data
-    geojson=geojson_url,               # URL or path to the GeoJSON file
+    geojson=geojson_data,               # URL or path to the GeoJSON file
     locations='state',                 # Column in data_frame with IDs matching GeoJSON features
     featureidkey="properties.name",    # Specifies how to find the ID within each GeoJSON feature
                                        # For this file, the state name is under the 'properties' object with the key 'name'
