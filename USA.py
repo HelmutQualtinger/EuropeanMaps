@@ -109,7 +109,7 @@ with open("/Users/haraldbeker/EuropeanMaps/us-states.geojson", "r") as f:
 # px.set_mapbox_access_token("YOUR_MAPBOX_ACCESS_TOKEN")
 
 # --- 3. Create the Choropleth Mapbox plot ---
-fig = px.choropleth_mapbox(
+fig = px.choropleth_map(
     data_frame=df,                     # Your data
     geojson=geojson_data,               # URL or path to the GeoJSON file
     locations='state',                 # Column in data_frame with IDs matching GeoJSON features
@@ -118,7 +118,7 @@ fig = px.choropleth_mapbox(
     color='wealth',              # Column determining the color
     color_continuous_scale="Hot",  # Color scale for continuous data
     # range_color=(3.0, 8.0),          # Optional: Set the range of the color scale
-    mapbox_style="carto-positron",     # Basemap style (this one doesn't require a token)
+    map_style="satellite-streets",     # Basemap style (this one doesn't require a token)
     zoom=3,                            # Initial map zoom level
     center={"lat": 37.0902, "lon": -95.7129}, # Initial map center (approx. center of USA)
     opacity=0.3,                       # Opacity of the colored regions (0=transparent, 1=opaque)
