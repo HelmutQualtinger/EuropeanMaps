@@ -1,9 +1,8 @@
 import geopandas as gpd
 import plotly.express as px
-import plotly.graph_objects as go
 import json
 import os
-
+import webbrowser
 # Dictionary of mean income by canton (two-letter abbreviation)
 # Values are in CHF (Swiss Francs)
 mean_income = {
@@ -82,7 +81,7 @@ try:
     # Optional: Print columns to see available properties like 'id', 'name'
     print("Available columns:", cantons_geo.columns)
     # Add income data to the GeoDataFrame
-    cantons_geo['income_per_capita'] = [life_expectancy_ch [canton] for canton in cantons_geo['id']]
+    cantons_geo['life_expectancy'] = [life_expectancy_ch [canton] for canton in cantons_geo['id']]
     print("Available columns:", cantons_geo.columns)
     print(cantons_geo.head())
 
@@ -98,71 +97,80 @@ print("Generating map...")
 cantons_json = json.loads(cantons_geo.to_json())
 
 # Create choropleth map
-fig = px.choropleth_mapbox(
+fig = px.choropleth_map(
     cantons_geo,
     geojson=cantons_json,
-    locations=cantons_geo.index,
-    color='income_per_capita',
+    featureidkey="properties.id",  # Adjust this if your GeoJSON uses a different key for canton IDs
+    locations='id',
+    color='life_expectancy',
     color_continuous_scale='rainbow_r',  # Similar to 'hot' in matplotlib
-    mapbox_style="open-street-map",  # Changed from "carto-positron" to show more geographical details
+    map_style="satellite-streets",  # Changed from "carto-positron" to show more geographical details
     zoom=7.5,
     center={"lat": 46.8, "lon": 8.2},  # Center of Switzerland
     opacity=0.4,  # Reduced opacity to better see geographical features underneath
-    labels={'income_per_capita': 'Lebenserwartung'},  # Label for the color legend
+    labels={'life_expectancy': 'Lebenserwartung'},  # Label for the color legend
     # Added 'name' if availabe in your GeoJSON
+
+)
+# Update the figure to make borders thick and blue
+fig.update_traces(
+    marker_line_color='blue',
+    marker_line_width=2.5,
+)
+
+# Additional layout updates to ensure borders are visible
+fig.update_geos(
+    showcoastlines=True,
+    coastlinecolor="Blue",
+    showland=True,
+    showcountries=True,
+    countrycolor="Blue",
+    countrywidth=2,
+    showsubunits=True,
+    subunitcolor="Blue",
+    subunitwidth=2
 )
 
 
-# Customize layout
-fig.update_layout(
-    title='Cantons of Switzerland',
-    title_font_size=10,
-    font=dict(
-        family="Arial",
-        size=16,
-        color="Black"
-    ),
-    margin={"r": 0, "t": 30, "l": 0, "b": 0},  # Increased top margin for title
-    height=800,
-    width=1200,
-    mapbox=dict(
-        style="open-street-map",  # Ensuring consistent style setting
-        layers=[
-            {
-                "below": 'traces',
-                "sourcetype": "raster",
-                "sourceattribution": "© OpenStreetMap contributors",
-                "source": [
-                    "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-                ]
-            }
-        ]
-    )
-)
 
-# Add canton labels
+# Add annotations with canton IDs and life expectancy values
+print("Adding canton annotations to map...")
+
+# Calculate centroids for each canton's geometry
+cantons_geo['centroid'] = cantons_geo.geometry.centroid
+cantons_geo['lon'] = cantons_geo.centroid.x
+cantons_geo['lat'] = cantons_geo.centroid.y
+
+# Add text annotations for each canton
+annotations = []
 for idx, row in cantons_geo.iterrows():
-    centroid = row.geometry.centroid
-    fig.add_trace(go.Scattermapbox(
-        lat=[centroid.y],
-        lon=[centroid.x],
-        mode='text',
-        text=[f"{row['name']}<br>{row['income_per_capita']}"],
-        textfont=dict(color='black', size=15),
-        showlegend=False
+    print (row['lon'], row['lat'])
+    print(f"{row['id']}: {row['life_expectancy']:.1f}" )
+    annotations.append(dict(
+        x=row['lon'],
+        y=row['lat'],
+        text=f"{row['id']}: {row['life_expectancy']:.1f}",
+        showarrow=False,
+        font=dict(
+            family="Arial, sans-serif",
+            size=10,
+            color="black"
+        ),
+        bgcolor="white",
+        bordercolor="black",
+        borderwidth=5,
+        borderpad=4,
+        opacity=0.8
     ))
+
+# Add annotations to the map
+fig.update_layout(annotations=annotations)
+
 
 # Save the map as an HTML file
 html_file = "switzerland_income_map.html"
 print(f"Saving map to {html_file}...")
 fig.write_html(html_file)
-import webbrowser
-# Open the HTML file in the default web browser
-print(f"Opening {html_file} in web browser...")
-file_url = f"file://{os.path.abspath(html_file)}"
-
-
-
 # Open the HTML file in the default web browser
 print(f"Opening {html_file} in web browser...")
 file_url = f"file://{os.path.abspath(html_file)}"
