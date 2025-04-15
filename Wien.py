@@ -150,6 +150,8 @@ fig.update_layout(
 # HTML-Datei speichern
 file_path = os.path.abspath("wien_bezirke_choropleth.html")
 fig.write_html(file_path)
+# pdf datei speichern
+fig.write_image("wien_bezirke_choropleth.pdf", scale=12.5) # Scale factor to approximate 1200 DPI (assuming base 96 DPI, 1200/96 = 12.5)
 
 
 # HTML-Datei im Browser öffnen
