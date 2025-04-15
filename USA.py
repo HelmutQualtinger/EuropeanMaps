@@ -1,6 +1,7 @@
 import plotly.express as px
 import pandas as pd
 import webbrowser
+import time
 # No need to import 'json' if Plotly handles the file loading
 
 # --- 1. Sample Data ---
@@ -95,70 +96,77 @@ data = {
 # print(len(median_income_data_us_states['state']))
 # print(len(median_income_data_us_states['median_household_income']))
 # print(median_income_data_us_states)
+def main():
+    df = pd.DataFrame(data)
 
-df = pd.DataFrame(data)
+    # --- 2. GeoJSON Source ---
+    # To use a local downloaded GeoJSON file, load it as a Python dictionary.
+    import json
 
-# --- 2. GeoJSON Source ---
-# To use a local downloaded GeoJSON file, load it as a Python dictionary.
-import json
-with open("/Users/haraldbeker/EuropeanMaps/us-states.geojson", "r") as f:
-    geojson_data = json.load(f)
+    with open("/Users/haraldbeker/EuropeanMaps/us-states.geojson", "r") as f:
+        geojson_data = json.load(f)
 
-# --- Optional: Set Mapbox Token (needed for certain map styles like 'satellite', 'streets') ---
-# Get a free token from account.mapbox.com
-# px.set_mapbox_access_token("YOUR_MAPBOX_ACCESS_TOKEN")
+    # --- Optional: Set Mapbox Token (needed for certain map styles like 'satellite', 'streets') ---
+    # Get a free token from account.mapbox.com
+    # px.set_mapbox_access_token("YOUR_MAPBOX_ACCESS_TOKEN")
 
-# --- 3. Create the Choropleth Mapbox plot ---
-fig = px.choropleth_map(
-    data_frame=df,                     # Your data
-    geojson=geojson_data,               # URL or path to the GeoJSON file
-    locations='state',                 # Column in data_frame with IDs matching GeoJSON features
-    featureidkey="properties.name",    # Specifies how to find the ID within each GeoJSON feature
-                                       # For this file, the state name is under the 'properties' object with the key 'name'
-    color='wealth',              # Column determining the color
-    color_continuous_scale="Hot",  # Color scale for continuous data
-    # range_color=(3.0, 8.0),          # Optional: Set the range of the color scale
-    map_style="satellite-streets",     # Basemap style (this one doesn't require a token)
-    zoom=3,                            # Initial map zoom level
-    center={"lat": 37.0902, "lon": -95.7129}, # Initial map center (approx. center of USA)
-    opacity=0.5,                       # Opacity of the colored regions (0=transparent, 1=opaque)
-    hover_name='state',                # Display state name prominently on hover
-    hover_data={'wealth': ':.4f%'}, # Show unemployment formatted to 1 decimal place, add '%'
-    labels={'wealth': 'wealth'}, # Label for the color legend and hover
-    title="US States median wealth (Mapbox Example)",
+    # --- 3. Create the Choropleth Mapbox plot ---
+    fig = px.choropleth_map(
+        data_frame=df,                     # Your data
+        geojson=geojson_data,               # URL or path to the GeoJSON file
+        locations='state',                 # Column in data_frame with IDs matching GeoJSON features
+        featureidkey="properties.name",    # Specifies how to find the ID within each GeoJSON feature
+                                        # For this file, the state name is under the 'properties' object with the key 'name'
+        color='wealth',              # Column determining the color
+        color_continuous_scale="Hot",  # Color scale for continuous data
+        # range_color=(3.0, 8.0),          # Optional: Set the range of the color scale
+        map_style="satellite-streets",  # Map style (e.g., 'open-street-map', 'carto-positron', etc.)
+        zoom=3,                            # Initial map zoom level
+        center={"lat": 37.0902, "lon": -95.7129}, # Initial map center (approx. center of USA)
+        opacity=0.5,                       # Opacity of the colored regions (0=transparent, 1=opaque)
+        hover_name='state',                # Display state name prominently on hover
+        hover_data={'wealth': ':,d'}, # Show unemployment formatted to 1 decimal place, add '%'
+        labels={'wealth': 'Vermögen'}, # Label for the color legend and hover
+        title="US States median wealth (Map Example)",
 
-)
-
-fig.update_traces(
-    marker_line_width=5,  # Width of the borders between states
-    marker_line_color="lightblue",  # Color of the borders between states
-)
-fig.update_layout(
-    title='Unemployment Rate by State',
-    title_font_size=10,
-    font=dict(
-        family="Arial",
-        size=16,
-        color="Black"
-    ),
-    margin={"r": 0, "t": 30, "l": 0, "b": 0},  # Increased top margin for title
-    height=800,
-    width=1200,
-    mapbox=dict(
-        style="open-street-map",  # Ensuring consistent style setting
-        layers=[
-            {
-                "below": 'traces',
-                "sourcetype": "raster",
-                "sourceattribution": "© OpenStreetMap contributors",
-                "source": [
-                    "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-                ]
-            }
-        ]
     )
-)
 
-# --- 5. Show the Plot ---
-fig.write_html("/Users/haraldbeker/EuropeanMaps/USA.html")
-webbrowser.open("file:///Users/haraldbeker/EuropeanMaps/USA.html")
+    fig.update_traces(
+        marker_line_width=5,  # Width of the borders between states
+        marker_line_color="lightblue",  # Color of the borders between states
+    )
+    fig.update_layout(
+        title='Unemployment Rate by State',
+        title_font_size=10,
+        font=dict(
+            family="Arial",
+            size=16,
+            color="Black"
+        ),
+        margin={"r": 0, "t": 30, "l": 0, "b": 0},  # Increased top margin for title
+        height=800,
+        width=1200,
+        mapbox=dict(
+            style="open-street-map",  # Ensuring consistent style setting
+            layers=[
+                {
+                    "below": 'traces',
+                    "sourcetype": "raster",
+                    "sourceattribution": "© OpenStreetMap contributors",
+                    "source": [
+                        "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    ]
+                }
+            ]
+        )
+    )
+
+    # --- 5. Show the Plot ---
+    fig.write_html("/Users/haraldbeker/EuropeanMaps/USA.html")
+    webbrowser.open("file:///Users/haraldbeker/EuropeanMaps/USA.html")
+    
+if __name__ == "__main__":
+    start_time = time.perf_counter()
+    main()
+    end_time = time.perf_counter()
+    print(f"The script took {end_time - start_time:.4f} seconds to run.")

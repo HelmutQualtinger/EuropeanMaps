@@ -8,7 +8,7 @@ import uuid
 # Load the GeoJSON file containing Austria's districts
 file_path = "österreich-bezirke.json"
 districts = gpd.read_file(file_path)
-
+print(districts.columns)
 # Add area, population, and population density to the GeoDataFrame
 districts['area']       = districts['name'].map(lambda x: politische_bezirke_dict[x]['fläche'])
 districts['population'] = districts['name'].map(lambda x: politische_bezirke_dict[x]["bevölkerung"])
@@ -22,7 +22,7 @@ fig = px.choropleth_map(
     locations=districts.index,
     color='population_density',  # You can specify a column for coloring
     hover_name="name", # Use the correct column name for hover data
-    title=r"Bevölkerungsdiche Österreich mit Bezirken Einw/km^2",
+    title=r"Bevölkerungsdichte Österreich mit Bezirken Einw/km^2",
     map_style="satellite-streets",
     center={"lat": 47.5162, "lon": 14.5501},
     hover_data={
@@ -45,3 +45,4 @@ fig.write_html(html_file_path)
 
 # Open the HTML file in Microsoft Edge
 webbrowser.get().open(f"file://{html_file_path}")
+

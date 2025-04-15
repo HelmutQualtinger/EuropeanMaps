@@ -60,25 +60,17 @@ fig_female = px.choropleth(
 # Update geos for all figures
 for fig in [fig_total, fig_male, fig_female]:
     fig.update_geos(
-        projection_type="sinusoidal",
-        fitbounds="locations",
-        showcoastlines=True,
-        coastlinecolor="Black",
-        showland=True,
-        landcolor="lightgray",
-        showcountries=True,
-        countrycolor="Black",
-        showframe=False,
+        visible=False,  # Hide the default geos
+        projection_type="natural earth",  # Use natural earth projection
+        center=dict(lat=54, lon=15),  # Center the map on Europe
+        projection_scale=4,  # Adjust scale for better visibility
         showlakes=True,
-        lakecolor="Blue",
+        lakecolor="darkblue",
         showocean=True,
-        oceancolor="lightblue",
-        countrywidth=0.5,
-        showsubunits=True,
-        resolution=50,
-        visible=True,
+        oceancolor="darkblue",
+        showcountries=True,
+        countrycolor="Black"
     )
-
     # Adjust layout
     fig.update_layout(
         geo=dict(
@@ -94,23 +86,39 @@ for fig in [fig_total, fig_male, fig_female]:
     )
 
 # Combine figures into subplots
-fig = make_subplots(rows=2, cols=2, subplot_titles=("Total Life Expectancy", "Male Life Expectancy", "Female Life Expectancy"), specs=[[{'type': 'choropleth'}, {'type': 'choropleth'}],[{'type': 'choropleth'},{'type': 'choropleth'}]])
+fig = make_subplots(
+    rows=2, 
+    cols=2, 
+    subplot_titles=("Total Life Expectancy"," " , "Female Life Expectancy", "Male Life Expectancy"), 
+    specs=[[{'type': 'choropleth'}, {'type': 'choropleth'}], [{'type': 'choropleth'}, {'type': 'choropleth'}]],
+    vertical_spacing=0.05,  # Reduziert den vertikalen Abstand (Standard ist 0.3)
+    horizontal_spacing=0.05,  # Reduziert den horizontalen Abstand (Standard ist 0.2)
+)
 
 fig.add_trace(fig_total.data[0], row=1, col=1)
 fig.add_trace(fig_male.data[0], row=2, col=2)
 fig.add_trace(fig_female.data[0], row=2, col=1)
 # Update layout for the combined figure
-fig.update_layout(
-    width=1200,
-    height=800,
-    title_text="Life Expectancy in Europe by Gender",
+fig.update_layout(margin=dict(l=0, r=0, t=20, b=0),  # Adjust margins as needed
+    width=1400,
+    height=1000,
+    title_text="Life Expectancy in Europe ",
+    title=dict(
+            text="Life Expectancy in Europe by Gender",
+            x=0.5,  # Center the title horizontally (0.5 is the center)
+            font=dict(
+                size=24  # Adjust the size as needed
+            )
+        ),
+    title_xanchor="center",  # Center the title
+
     geo=dict(
         showframe=False,
         projection_scale=4,
         center=dict(lat=54, lon=15),
         showlakes=True,
         showocean=True,
-        oceancolor="darkblue",
+        oceancolor="lightblue", lakecolor="darkblue",
         showcountries=True,  # Ensure countries are shown
         countrycolor="Black"   # Set the color for country borders
     ),
@@ -120,7 +128,8 @@ fig.update_layout(
         center=dict(lat=54, lon=15),
         showlakes=True,
         showocean=True,
-        oceancolor="darkblue",
+        oceancolor="lightblue",
+        lakecolor="darkblue",
         showcountries=True,  # Ensure countries are shown
         countrycolor="Black"   # Set the color for country borders
     ),
@@ -130,7 +139,8 @@ fig.update_layout(
         center=dict(lat=54, lon=15),
         showlakes=True,
         showocean=True,
-        oceancolor="darkblue",
+        oceancolor="lightblue",
+        lakecolor="darkblue",
         showcountries=True,  # Ensure countries are shown
         countrycolor="Black"   # Set the color for country borders
     ),
@@ -140,11 +150,17 @@ fig.update_layout(
         center=dict(lat=54, lon=15),
         showlakes=True,
         showocean=True,
-        oceancolor="darkblue",
+        lakecolor="darkblue",
+        oceancolor="lightblue",
         showcountries=True,  # Ensure countries are shown
         countrycolor="Black"   # Set the color for country borders
     ),
 )
+fig.update_layout(
+    margin=dict(l=0, r=0, t=50, b=0),
+    # Adjust vertical spacing between rows
+    height=800,  # Adjust the height as needed
+    )
 file_path = os.path.abspath("european_life_expectancy.html")
 fig.write_html(file_path)
 webbrowser.open("file://" + file_path)

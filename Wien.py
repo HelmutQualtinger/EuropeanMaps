@@ -137,7 +137,12 @@ for idx, row in df.iterrows():
         showarrow=False,
         font=dict(size=8)
     )
+    
 
+fig.update_traces(
+    marker_line_width=3,  # Width of the borders between states
+    marker_line_color="gold",  # Color of the borders between states
+)
 fig.update_layout(
     margin={"r":0,"t":0,"l":0,"b":0},
 
